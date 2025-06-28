@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
-const secretkey = "radheradhe";
-const Client = require("../models/clientsModel");
+const secretkey = "krishna";
+const User = require("../models/userModel");
 
 module.exports = async (req, res, next) => {
   const bearerToken = req.headers.authorization;
@@ -20,12 +20,12 @@ module.exports = async (req, res, next) => {
   console.log(decode.email, "decode");
   const email = decode.email;
 
-  const clientDetail = await Client.findOne({ email });
+  const userDetail = await User.findOne({ email });
 
-  if (!clientDetail) {
-    return res.status(400).send("client not found");
+  if (!userDetail) {
+    return res.status(400).send("user not found");
   }
 
-  req.client = clientDetail;
+  req.user = userDetail;
   next();
 };

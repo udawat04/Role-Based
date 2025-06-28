@@ -1,4 +1,6 @@
 const User = require("../models/userModel");
+const jwt = require("jsonwebtoken");
+const secretkey = "krishna";
 
 exports.createUsers = async (req, res) => {
   try {
@@ -20,6 +22,25 @@ exports.createUsers = async (req, res) => {
 };
 
 exports.getUsers = async (req, res) => {
+    console.log(req.client)
   const result = await User.find();
   return res.status(200).send(result);
 };
+
+exports.userLogin = async(req,res)=>{
+    const {email,password} = req.body
+    const alreadyEmail = await User.findOne({email})
+    if(!alreadyEmail){
+        return res.status(400).send("email not found")
+    }
+
+    const dbpassword = alreadyEmail.password
+
+    if(password!==dbpassword){
+        return res.status(400).send("password not match")
+    }
+
+    const token = jwt.sign({email:alreadyEmail.email},secretkey,{expiresIn:"4h"})
+
+    return res.status(200).json({msg:"user logged in ",token})
+}

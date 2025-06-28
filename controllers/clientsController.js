@@ -1,4 +1,6 @@
 const Client = require("../models/clientsModel")
+const jwt = require("jsonwebtoken")
+const secretkey = "radheradhe";
 
 exports.createClient = async(req,res)=>{
    try {
@@ -39,7 +41,7 @@ exports.clientLogin = async(req,res)=>{
         return res.status(400).send("password not match")
     }
 
-    const token = jwt.sign({email:alreadyEmail.email},secretkey,{expiresIn:"1h"})
+    const token = jwt.sign({email:alreadyEmail.email},secretkey,{expiresIn:"4h"})
 
     return res.status(200).json({msg:"user logged in ",token})
 }
