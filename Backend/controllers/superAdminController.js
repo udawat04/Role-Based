@@ -1,6 +1,7 @@
 const  SuperAdmin = require("../models/superAdminModel")
 const jwt = require("jsonwebtoken")
-const secretkey = "hdfdjkdj";
+const secretkey = "radheradhe";
+const User = require("../models/userModel")
 
 exports.createSuperAdmin = async(req,res)=>{
    try {
@@ -13,9 +14,17 @@ exports.createSuperAdmin = async(req,res)=>{
 
     const data = req.body;
     const newAdmin = new SuperAdmin(data);
-    await newAdmin.save();
+    const newData = await newAdmin.save();
 
-    return res.status(200).json({ msg: "SuperAdmin is created", newAdmin });
+    console.log(newData._id,"newdata")
+   const userData = { name, email, password, superAdmin_id:newData._id , role:"superAdmin" };
+
+   console.log(userData,"userrr")
+   
+   const newUser = new User(userData)
+    await newUser.save()
+
+    return res.status(200).json({ msg: "SuperAdmin is created", newAdmin ,newUser });
    } 
    
    catch (error) {

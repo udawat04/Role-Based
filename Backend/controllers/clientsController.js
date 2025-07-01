@@ -1,9 +1,11 @@
 const Client = require("../models/clientsModel")
+const User = require("../models/userModel")
 const jwt = require("jsonwebtoken")
 const secretkey = "radheradhe";
 
 exports.createClient = async(req,res)=>{
-  const s_id = req.superAdmin._id
+  const s_id = req.user.superAdmin_id
+  
   
    try {
     const { name, email, password } = req.body;
@@ -13,11 +15,23 @@ exports.createClient = async(req,res)=>{
     }
     const data = { name, email, password, superAdmin_id:s_id };
     const newClient = new Client(data);
-    await newClient.save();
+    const newData = await newClient.save();
+
+    const clientData = {
+      name,
+      email,
+      password,
+      client:newData._id,
+      superAdmin_id:s_id,
+      role: "client",
+    };
+
+    const newUser = new User(clientData)
+    await newUser.save()
 
     return res
       .status(200)
-      .json({ msg: "Clent Created Successfully",newClient });
+      .json({ msg: "Client Created Successfully",newClient,newUser });
    } 
    catch (error) {
     return res.status(500).json({ error: error.message });
@@ -25,12 +39,21 @@ exports.createClient = async(req,res)=>{
 }
 
 exports.getClients = async(req,res)=>{
-  // console.log(req.superAdmin._id,"superAdmin");
-  const s_id = req.superAdmin._id;
-    const result = await Client.find({ superAdmin_id: s_id }).populate(
-      "superAdmin_id"
-    );
-    return res.status(200).send(result)
+  const users = req.user;
+  const s_id = req.user. superAdmin_id
+  console.log(users,"User");
+  const {role} = req.user
+  if(role==="superAdmin" )
+  {
+    const result = await Client.find({ superAdmin_id :s_id}).populate("superAdmin_id");
+    const data = await User.find();
+    const abc = { result, data };
+    return res.status(200).send(abc);
+  }
+  else{
+    return res.status(400).send("you are not authorized");
+  }
+    
 }
 
 

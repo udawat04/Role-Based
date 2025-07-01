@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
-const secretkey = "hdfdjkdj";
-const SuperAdmin = require("../models/superAdminModel");
+const secretkey = "radheradhe";
+const User = require("../models/userModel");
 
 module.exports = async (req, res, next) => {
   const bearerToken = req.headers.authorization;
@@ -20,12 +20,13 @@ module.exports = async (req, res, next) => {
   console.log(decode.email, "decode");
   const email = decode.email;
 
-  const superAdminDetail = await SuperAdmin.findOne({ email });
+  const userDetail = await User.findOne({ email });
 
-  if (!superAdminDetail) {
-    return res.status(400).send("superAdmin not found");
+  if (!userDetail) {
+    return res.status(400).send("user not found");
   }
 
-  req.superAdmin = superAdminDetail;
+  req.user = userDetail;
+  
   next();
 };

@@ -7,7 +7,7 @@ const clientsRoute = require("./routes/clientsRoute")
 const userRoute = require("./routes/userRoute")
 const classRoute = require("./routes/classRoute")
 
-mongoose.connect("mongodb://localhost:27017/Role-Based");
+mongoose.connect("mongodb+srv://udawat:1234@udawat.1cdje.mongodb.net/role-based");
 const app = express()
 
 const corsOptions = {

@@ -6,8 +6,9 @@ const userSchema = new mongoose.Schema({
   password: { type: String },
   role: {
     type: String,
-    enum: ["admin", "sub-admin" , "HR" , "trainer" , "student"],
+    enum: ["superAdmin" ,"client", "admin", "sub-admin" , "HR" , "trainer" , "student"],
   },
+  superAdmin_id: { type: mongoose.Schema.ObjectId, ref: "super-admin" },
   client: { type: mongoose.Schema.ObjectId, ref: "client" },
 });
 
