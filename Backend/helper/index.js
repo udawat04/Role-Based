@@ -1,4 +1,5 @@
 const cloudinary = require("cloudinary").v2;
+const nodemailer = require("nodemailer")
 
 
 cloudinary.config({
@@ -35,4 +36,23 @@ exports.uploadImage = async (files) => {
   }
 
   return results; // Return the list of upload results
+};
+
+exports.sendMail = async (mailSentTo, subjectBody, textBody, htmlBody) => {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    auth: {
+      user: "udawatsudarshansingh@gmail.com",
+      pass: "qqyz dabh pshe ktrc",
+    },
+  });
+
+  const info = await transporter.sendMail({
+    from: "udawatsudarshansingh@gmail.com",
+    to: mailSentTo,
+    subject: subjectBody,
+    text: textBody,
+    html: htmlBody,
+  });
+  console.log(">>>>>", info);
 };

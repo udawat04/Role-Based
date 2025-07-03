@@ -16,46 +16,35 @@ const UserDashboard = () => {
       </div>
       <div className="flex-1">
         <Header />
-        <div
-          className="w-80 h-auto border cursor-pointer border-gray-200 rounded-2xl shadow-md bg-white p-5 hover:shadow-xl hover:scale-105 transition-all duration-300"
-         
-        >
-          {/* Image */}
-          <div className="flex justify-center">
-            <img
-              className="w-32 h-32 rounded-full object-cover border-2 border-gray-300"
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy8unA88y453WxwRtI5brdcCA6_tMFnMx6uQ&s"
-              alt="client"
-            />
-          </div>
+        <div className="p-8">
+          {/* User Info Section */}
+          <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 flex items-center gap-12 hover:shadow-2xl transition-all duration-300">
+            {/* Left Side - Image */}
+            <div>
+              <img
+                src={
+                  user?.image ||
+                  "https://i.ibb.co/SncFf7G/user.png"
+                }
+                alt="Profile"
+                className="w-56 h-56 rounded-full border-4 border-blue-500 object-cover"
+              />
+            </div>
 
-          {/* Info */}
-          <div className="mt-5 space-y-2">
-            <p className="text-xl font-bold text-gray-800 text-center">
-              👤 {user.name}
-            </p>
-            <p className="text-sm text-gray-600 text-center">
-              ⭐ Role: <span className="font-semibold">{user.role}</span>
-            </p>
-            {user.client ? (
-              <p className="text-sm text-gray-600 text-center">
-                ✨ Client:{" "}
-                <span className="font-semibold">{user.client.name}</span>
+            {/* Right Side - Details */}
+            <div className="space-y-6">
+              <h2 className="text-4xl font-bold text-gray-800">
+                {user?.name}
+              </h2>
+              <p className="text-xl text-gray-600">
+                📧 {user?.email}
               </p>
-            ) : (
-              ""
-            )}
-            <p className="text-sm text-gray-600 text-center">
-              📧 Email: <span className="font-semibold">{user.email}</span>
-            </p>
-            {user.client ? (
-              <p className="text-sm text-gray-600 text-center">
-                🏢 Created By:{" "}
-                <span className="font-semibold">{user.client.name}</span>
+              <p className="text-xl text-blue-600 font-semibold">
+                🔖 Role: {user?.role}
               </p>
-            ) : (
-              ""
-            )}
+
+          
+            </div>
           </div>
         </div>
       </div>

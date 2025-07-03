@@ -17,6 +17,7 @@ import CreateCourse from "./pages/course-pages/CreateCourse";
 import ShowCourses from "./pages/course-pages/ShowCourses";
 import CreateBatch from "./pages/batch-pages/CreateBatch";
 import ShowBatch from "./pages/batch-pages/ShowBatch";
+import ForgetPassword from "./pages/user-pages/ForgetPassword";
 
 const App = () => {
   return (
@@ -42,6 +43,7 @@ const App = () => {
 
         {/* User Route */}
         <Route path="/users" element={<UserDashboard />} />
+        <Route path="/users/forget-password" element={<ForgetPassword />} />
 
 
         <Route path="/courses/create-courses" element={<CreateCourse />} />
