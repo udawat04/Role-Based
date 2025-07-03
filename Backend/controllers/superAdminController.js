@@ -1,7 +1,8 @@
 const  SuperAdmin = require("../models/superAdminModel")
 const jwt = require("jsonwebtoken")
 const secretkey = "radheradhe";
-const User = require("../models/userModel")
+const User = require("../models/userModel");
+const { uploadImage } = require("../helper");
 
 exports.createSuperAdmin = async(req,res)=>{
    try {
@@ -12,12 +13,14 @@ exports.createSuperAdmin = async(req,res)=>{
       return res.status(400).send("SuperAdmin already created");
     }
 
-    const data = req.body;
+    const imageUpload = await uploadImage(req.files)
+
+    const data = {name,email,password,image:imageUpload[0].url};
     const newAdmin = new SuperAdmin(data);
     const newData = await newAdmin.save();
 
     console.log(newData._id,"newdata")
-   const userData = { name, email, password, superAdmin_id:newData._id , role:"superAdmin" };
+   const userData = { name, email, password,image:imageUpload[0].url, superAdmin_id:newData._id , role:"superAdmin" };
 
    console.log(userData,"userrr")
    

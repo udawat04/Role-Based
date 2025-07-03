@@ -1,3 +1,4 @@
+const { uploadImage } = require("../helper");
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const secretkey = "radheradhe";
@@ -12,7 +13,8 @@ exports.createUsers = async (req, res) => {
     if (alreadyEmail) {
       return res.status(400).send("user already created");
     }
-    const data = { name, email, password, role, client:c_id };
+    const imageUpload = await uploadImage(req.files)
+    const data = { name, email, password,image:imageUpload[0].url, role, client:c_id };
     const newUser = new User(data);
     await newUser.save();
 

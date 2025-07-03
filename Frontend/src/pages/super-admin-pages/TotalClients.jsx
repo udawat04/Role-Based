@@ -9,6 +9,8 @@ const TotalClients = () => {
   const token = localStorage.getItem("token");
   const [data, setData] = useState([]);
   const [userData,setUserData] = useState([])
+  const [allStaff,setAllStaff] = useState([])
+  const [allStudent,setAllStudent] = useState([])
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -19,10 +21,10 @@ const TotalClients = () => {
           },
         });
         const result = response.data;
-        console.log(`>>>>>>>>>`,result.result);
-        console.log(`>>>>>>>>>`,result.data);
+        console.log(`rrrrrrrr`,result.result);
+        console.log(`>>>>>>>>>`,result.allStaff);
         setData(result.result);
-        setUserData(result.data)
+        setUserData(result.allStaff)
       } catch (error) {
         console.error("Error fetching data:", error);
 
@@ -38,14 +40,24 @@ const TotalClients = () => {
     fetchData();
   }, []);
 
-  const staff = userData.filter(
-    (item) =>
-      item.role === "admin" ||
-      item.role === "HR" ||
-      item.role === "trainer" ||
-      item.role === "sub-admin"
-  );
-  console.log(staff,"staffff")
+  useEffect(() => {
+    const staff = userData.map((group) =>
+      group.filter(
+        (item) =>
+          item.role === "admin" ||
+          item.role === "HR" ||
+          item.role === "trainer" ||
+          item.role === "sub-admin"
+      )
+    );
+    setAllStaff(staff);
+
+    const student = userData.map((group) =>
+      group.filter((item) => item.role === "student")
+    );
+    setAllStudent(student);
+  }, [userData]);
+  
   return (
     <div className="flex">
       <div>
@@ -53,19 +65,16 @@ const TotalClients = () => {
       </div>
       <div className="flex-1">
         <Header />
-        <div className="flex gap-10">
+        <div className="grid grid-cols-3 gap-2">
           {data &&
             data.map((item, index) => (
               // card
-              <Link to={`/super-admin/specific-client/${item._id}`}>
-                <div
-                  className="w-80 h-auto border rounded-2xl shadow-lg bg-white p-4 hover:shadow-2xl transition-all duration-300"
-                  key={index}
-                >
+              <Link to={`/super-admin/specific-client/${item._id}`} key={index}>
+                <div className="w-90 h-auto border rounded-2xl shadow-lg bg-white p-4 hover:shadow-2xl transition-all duration-300">
                   <div className="flex justify-center">
                     <img
                       className="w-40 h-40  "
-                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy8unA88y453WxwRtI5brdcCA6_tMFnMx6uQ&s"
+                      src={item.image}
                       alt="client"
                     />
                   </div>
@@ -85,6 +94,21 @@ const TotalClients = () => {
                         {item.superAdmin_id.name}
                       </span>
                     </p>
+
+                    <div className="flex justify-around ">
+                      <Link
+                        to={`/super-admin/specific-client-users?index=${index}`}
+                        key={index}
+                      >
+                        <button className=" px-6 py-2 cursor-pointer rounded-xl bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:from-blue-600 hover:to-blue-800 shadow-md hover:shadow-xl transition-all">
+                          👥 Staff - {allStaff[index]?.length || 0}
+                        </button>
+                      </Link>
+
+                      <button className="px-6 py-2 cursor-pointer rounded-xl bg-gradient-to-r from-green-500 to-green-700 text-white hover:from-green-600 hover:to-green-800 shadow-md hover:shadow-xl transition-all">
+                        🎓 Students - {allStudent[index]?.length || 0}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </Link>

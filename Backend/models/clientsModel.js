@@ -4,6 +4,7 @@ const clientsSchema = new mongoose.Schema({
   name: { type: String },
   email: { type: String },
   password: { type: String },
+  image:{type:String},
   superAdmin_id: { type: mongoose.Schema.ObjectId, ref: "super-admin" },
 });
 

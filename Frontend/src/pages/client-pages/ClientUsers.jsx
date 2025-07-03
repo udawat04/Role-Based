@@ -46,7 +46,7 @@ const ClientUsers = () => {
                   <div className="flex justify-center">
                     <img
                       className="w-32 h-32 rounded-full object-cover border-2 border-gray-300"
-                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy8unA88y453WxwRtI5brdcCA6_tMFnMx6uQ&s"
+                      src={item.image}
                       alt="client"
                     />
                   </div>

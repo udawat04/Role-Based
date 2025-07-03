@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 const Header = () => {
     const navigate = useNavigate()
     const data = JSON.parse(localStorage.getItem("data"))
-    console.log(data.user.name,"")
+    
 
     const handleLogout = ()=>{
         localStorage.removeItem("token")

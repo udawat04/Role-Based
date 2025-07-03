@@ -1,64 +1,87 @@
-import React, { useEffect, useState } from 'react'
-import Sidebar from '../../components/Sidebar'
-import Header from '../../components/Header';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import Sidebar from "../../components/Sidebar";
+import Header from "../../components/Header";
+import axios from "axios";
+import { Link } from "react-router-dom";
+
 const backendurl = "http://localhost:5000";
 
 const ClientDashboard = () => {
-   const [data, setData] = useState([]);
-      const token = localStorage.getItem("token");
-      useEffect(() => {
-          const fetchData = async () => {
-            try {
-              const response = await axios.get(`${backendurl}/users/`, {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  "Content-Type": "application/json",
-                },
-              });
-              const result = response.data;
-              console.log(result);
-              setData(result);
-            } catch (error) {
-              console.error("Error fetching data:", error);
-            }
-          };
-  
-        fetchData();
-      }, []);
-  
-      console.log(data.length,"datatad")
+  const [data, setData] = useState([]);
+  const token = localStorage.getItem("token");
+  const userData = JSON.parse(localStorage.getItem("data"));
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${backendurl}/users/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        const result = response.data;
+        console.log(result);
+        setData(result);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
-    <div className="flex ">
-      <div>
-        <Sidebar />
-      </div>
+    <div className="flex">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main Content */}
       <div className="flex-1">
         <Header />
-        <Link to={"/client/users"}>
-          <div className="w-80 m-10 cursor-pointer  h-auto  border rounded-2xl shadow-lg bg-white p-4 hover:shadow-2xl transition-all duration-300">
-            <div className="flex justify-center">
+
+        <div className="p-8">
+          {/* User Info Section */}
+          <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 flex items-center gap-12 hover:shadow-2xl transition-all duration-300">
+            {/* Left Side - Image */}
+            <div>
               <img
-                className="w-40 h-40  "
-                src="https://static.vecteezy.com/system/resources/thumbnails/022/705/701/small/customer-care-icon-management-support-and-help-client-illustration-symbol-patient-assistance-sign-or-logo-vector.jpg"
-                alt="client"
+                src={
+                  userData?.user?.client?.image ||
+                  "https://i.ibb.co/SncFf7G/user.png"
+                }
+                alt="Profile"
+                className="w-56 h-56 rounded-full border-4 border-blue-500 object-cover"
               />
             </div>
 
-            <div className="mt-4 space-y-2">
-              <p className="text-2xl text-center font-semibold text-gray-800">
-                👤 Total Users
+            {/* Right Side - Details */}
+            <div className="space-y-6">
+              <h2 className="text-4xl font-bold text-gray-800">
+                {userData?.user?.name}
+              </h2>
+              <p className="text-xl text-gray-600">
+                📧 {userData?.user?.email}
               </p>
-              <p className="text-2xl text-center font-semibold text-gray-800">
-                {data && data.length}
+              <p className="text-xl text-blue-600 font-semibold">
+                🔖 Role: {userData?.user?.role}
               </p>
+
+              {/* Total Users */}
+              <div className="flex gap-6">
+                <Link to={"/client/users"}>
+                  <div className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-xl shadow-md hover:scale-105 transition-all cursor-pointer">
+                    🙍‍♂️ Total Users:{" "}
+                    <span className="font-bold">{data?.length || 0}</span>
+                  </div>
+                </Link>
+              </div>
             </div>
           </div>
-        </Link>
+        </div>
       </div>
     </div>
   );
-}
+};
 
-export default ClientDashboard
+export default ClientDashboard;

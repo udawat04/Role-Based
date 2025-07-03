@@ -10,7 +10,6 @@ const backendurl = "http://localhost:5000";
 
 const CreateClient = () => {
   const navigate = useNavigate();
- 
   const token = localStorage.getItem("token");
 
   const [formData, setFormData] = useState({
@@ -19,6 +18,9 @@ const CreateClient = () => {
     password: "",
   });
 
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false); // Loader state
+
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -26,66 +28,65 @@ const CreateClient = () => {
     }));
   };
 
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    axios.defaults.withCredentials = true;
+    setLoading(true);
 
     const { name, email, password } = formData;
     if (!name || !email || !password) {
       toast.error("All fields are required");
+      setLoading(false);
       return;
     }
 
-    try {
-        const response = await axios.post(
-          `${backendurl}/clients/create`,
-          { name, email, password },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`, // ✅ Add token here
-              "Content-Type": "application/json",
-            },
-          }
-        );
+    const dataToSend = new FormData();
+    dataToSend.append("name", name);
+    dataToSend.append("email", email);
+    dataToSend.append("password", password);
+    if (image) {
+      dataToSend.append("image", image);
+    }
 
-      console.log("[✅ Signup Response]:", response.data);
+    try {
+      const response = await axios.post(
+        `${backendurl}/clients/create`,
+        dataToSend,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       if (response.status === 200) {
         toast.success(response.data.message || "Signup Successful");
         navigate("/super-admin/total-clients");
-        
       } else {
         toast.error(response.data.message || "Signup failed");
       }
     } catch (error) {
-      console.error("❌ Error occurred in Signup API call");
-      console.log("[Error Object]:", error);
-
-      if (error.response) {
-        console.log("[Backend Error Response]:", error.response);
-        console.log("[Status Code]:", error.response.status);
-        console.log("[Response Data]:", error.response.data);
-      } else if (error.request) {
-        console.log("[No Response Received]:", error.request);
-      } else {
-        console.log("[Axios Config Error]:", error.message);
-      }
-
+      console.error("❌ Error occurred in Signup API call", error);
       toast.error(
         error?.response?.data?.message || "Signup error, try again later"
       );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="flex ">
-      <div>
-        <Sidebar />
-      </div>
+      <Sidebar />
 
       <div className="flex-1">
-        <Header/>
-        <div className="flex  items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-green-300">
+        <Header />
+
+        <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-green-300">
           <div className="bg-slate-900 p-10 rounded-lg shadow-lg w-full sm:w-96 text-indigo-300 text-sm">
             <h2 className="text-3xl font-semibold text-white text-center mb-6">
               Client Signup
@@ -123,7 +124,7 @@ const CreateClient = () => {
               </div>
 
               {/* Password */}
-              <div className="mb-6 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
+              <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
                 <img src={assets.lock_icon} alt="lock icon" />
                 <input
                   name="password"
@@ -137,23 +138,61 @@ const CreateClient = () => {
                 />
               </div>
 
+              {/* Image Upload */}
+              <div className="mb-6">
+                <label className="block mb-2 text-indigo-200">
+                  Profile Image
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="block w-full text-sm text-gray-300
+                  file:mr-4 file:py-2 file:px-4
+                  file:rounded-full file:border-0
+                  file:text-sm file:font-semibold
+                  file:bg-indigo-600 file:text-white
+                  hover:file:bg-indigo-700"
+                />
+              </div>
+
+              {/* Button with Loader */}
               <button
                 type="submit"
-                className="w-full py-2.5 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-900 text-white font-medium"
+                disabled={loading}
+                className={`w-full py-2.5 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-900 text-white font-medium flex items-center justify-center gap-2 ${
+                  loading ? "opacity-70 cursor-not-allowed" : "hover:scale-105"
+                } transition-all`}
               >
-                Signup
+                {loading ? (
+                  <>
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                      ></path>
+                    </svg>
+                    Creating...
+                  </>
+                ) : (
+                  "Signup"
+                )}
               </button>
             </form>
-
-            {/* <div className="text-center mt-5 text-gray-400 text-xs">
-          Already have an account?{" "}
-          <Link
-            to="/"
-            className="text-blue-400 font-bold text-sm cursor-pointer underline"
-          >
-            Login
-          </Link>
-        </div> */}
           </div>
         </div>
       </div>

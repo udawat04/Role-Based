@@ -1,3 +1,4 @@
+const { uploadImage } = require("../helper");
 const Client = require("../models/clientsModel")
 const User = require("../models/userModel")
 const jwt = require("jsonwebtoken")
@@ -13,7 +14,14 @@ exports.createClient = async(req,res)=>{
     if (alreadyEmail) {
       return res.status(400).send("client already created");
     }
-    const data = { name, email, password, superAdmin_id:s_id };
+    const imageUpload = await uploadImage(req.files)
+    const data = {
+      name,
+      email,
+      password,
+      image: imageUpload[0].url,
+      superAdmin_id: s_id,
+    };
     const newClient = new Client(data);
     const newData = await newClient.save();
 
@@ -21,8 +29,9 @@ exports.createClient = async(req,res)=>{
       name,
       email,
       password,
-      client:newData._id,
-      superAdmin_id:s_id,
+      image: imageUpload[0].url,
+      client: newData._id,
+      superAdmin_id: s_id,
       role: "client",
     };
 
@@ -46,8 +55,26 @@ exports.getClients = async(req,res)=>{
   if(role==="superAdmin" )
   {
     const result = await Client.find({ superAdmin_id :s_id}).populate("superAdmin_id");
-    const data = await User.find();
-    const abc = { result, data };
+    console.log(`>>>>>result`, result);
+    let id = "";
+    let allStaff = []
+    for (const item of result) {
+      id = item._id;
+      console.log("Client ID:", id);
+      const Staff = await User.find({ client: id });
+      
+      allStaff.push(Staff)
+
+    }
+    
+    
+
+
+
+    // const data = await User.find();
+    // console.log(`>>>>>data`,data);
+    
+    const abc = { result,allStaff};
     return res.status(200).send(abc);
   }
   else{

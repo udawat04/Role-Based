@@ -3,18 +3,18 @@ import { Link } from 'react-router-dom'
 
 const Sidebar = () => {
   const data = JSON.parse(localStorage.getItem("data"));
-  console.log(data.user.role,"lll")
+ 
 
     const [isOpen , setIsOpen] = useState(true)
     const toogleSidebar =()=>{
         setIsOpen(!isOpen)
     }
-    console.log(isOpen)
+    
   return (
     <div
       className={`${
         isOpen ? "w-52" : "w-30"
-      } bg-amber-800 min-h-screen border-r-4`}
+      } bg-amber-800 min-h-screen border-r-4 h-[100%]`}
     >
       <div className="bg-red-300 flex justify-end pr-7 ">
         <button
@@ -62,17 +62,46 @@ const Sidebar = () => {
             </>
           )}
 
-          {data && data.user.role === "admin" && (
+          {data &&
+            (data.user.role === "admin" ||
+              data.user.role === "sub-admin" ||
+              data.user.role === "HR" ) && (
+              <>
+                <Link to={"/users"}>
+                  <li className="bg-red-100 mt-5 py-2">User</li>
+                </Link>
+                <Link to={"/client/users"}>
+                  <li className="bg-blue-100 mt-5 py-2">Total - User</li>
+                </Link>
+                <Link to={"/courses/create-courses"}>
+                  <li className="bg-green-100 mt-5 py-2">Create - Course</li>
+                </Link>
+                <Link to={"/batches/create-batches"}>
+                  <li className="bg-green-100 mt-5 py-2">Create - Batch</li>
+                </Link>
+                <Link to={"/courses/all-courses"}>
+                  <li className="bg-green-100 mt-5 py-2">Show - Courses</li>
+                </Link>
+                <Link to={"/batches/all-batches"}>
+                  <li className="bg-green-100 mt-5 py-2">Show - Batches</li>
+                </Link>
+              </>
+            )}
+          {data && data.user.role === "trainer" && (
             <>
               <Link to={"/users"}>
                 <li className="bg-red-100 mt-5 py-2">User</li>
               </Link>
-              {/* <Link to={"/client/users"}>
+              <Link to={"/client/users"}>
                 <li className="bg-blue-100 mt-5 py-2">Total - User</li>
-              </Link> */}
-
-              <Link to={"/users"}>
-                <li className="bg-green-100 mt-5 py-2">Create - Class</li>
+              </Link>
+              
+              
+              <Link to={"/courses/all-courses"}>
+                <li className="bg-green-100 mt-5 py-2">Show - Courses</li>
+              </Link>
+              <Link to={"/batches/all-batches"}>
+                <li className="bg-green-100 mt-5 py-2">Show - Batches</li>
               </Link>
             </>
           )}

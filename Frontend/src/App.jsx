@@ -11,10 +11,17 @@ import ClientUsers from "./pages/client-pages/ClientUsers";
 import CreateUser from "./pages/client-pages/CreateUser";
 import UserDashboard from "./pages/user-pages/UserDashboard";
 import SpecificClient from "./pages/super-admin-pages/SpecificClient";
+import TitleManager from "./services/TitleManager";
+import SpecificClientUsers from "./pages/super-admin-pages/SpecificClientUsers";
+import CreateCourse from "./pages/course-pages/CreateCourse";
+import ShowCourses from "./pages/course-pages/ShowCourses";
+import CreateBatch from "./pages/batch-pages/CreateBatch";
+import ShowBatch from "./pages/batch-pages/ShowBatch";
 
 const App = () => {
   return (
     <BrowserRouter>
+    <TitleManager/>
       <Routes>
         {/* Auth Routes */}
         <Route path="/" element={<Login />} />
@@ -26,6 +33,7 @@ const App = () => {
         <Route path="/super-admin/total-users" element={<TotalUsers />} />
         <Route path="/super-admin/create-client" element={<CreateClient />} />
         <Route path="/super-admin/specific-client/:id" element={<SpecificClient />} />
+        <Route path="/super-admin/specific-client-users" element={<SpecificClientUsers />} />
 
         {/* Client Routes */}
         <Route path="/client" element={<ClientDashboard />} />
@@ -34,6 +42,16 @@ const App = () => {
 
         {/* User Route */}
         <Route path="/users" element={<UserDashboard />} />
+
+
+        <Route path="/courses/create-courses" element={<CreateCourse />} />
+        <Route path="/courses/all-courses" element={<ShowCourses />} />
+
+
+        <Route path="/batches/create-batches" element={<CreateBatch />} />
+        <Route path="/batches/all-batches" element={<ShowBatch />} />
+
+
       </Routes>
     </BrowserRouter>
   );
